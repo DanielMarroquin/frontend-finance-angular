@@ -1,0 +1,113 @@
+.sidebar {
+  width: 240px;
+  background-color: #f4f4f4;
+  border-right: 3px solid #ffd100;
+  padding: 1rem;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+
+  nav {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .nav-header {
+      padding: 0.5rem 0 1.5rem 0;
+      margin-bottom: 0.5rem;
+
+      h2 {
+        margin: 0;
+        color: #002d62;
+        font-size: 1.3rem;
+        font-weight: 600;
+      }
+    }
+
+    .nav-content {
+      flex-grow: 1;
+      list-style: none;
+      padding: 0;
+      margin: 0 0 1rem 0;
+      max-height: calc(100vh - 220px);
+      overflow-y: auto;
+
+      li {
+        margin-bottom: 0.4rem;
+
+        a {
+          display: flex;
+          align-items: center;
+          gap: 0.8rem;
+          text-decoration: none;
+          font-weight: 500;
+          color: #1c1c1c;
+          padding: 0.7rem 0.8rem;
+          border-radius: 6px;
+          transition: all 0.2s ease;
+
+          &:hover {
+            background-color: #e9e9e9;
+            transform: translateX(2px);
+          }
+
+          &.active {
+            color: #002d62;
+            font-weight: 600;
+            background-color: #e0e9f5;
+            box-shadow: inset 3px 0 0 #002d62;
+          }
+
+          svg {
+            stroke: #002d62;
+            flex-shrink: 0;
+          }
+        }
+      }
+    }
+
+    .nav-footer {
+      margin-top: auto;
+      border-top: 1px solid #e0e0e0;
+      padding-top: 1rem;
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+          margin-bottom: 0.5rem;
+
+          a {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+            font-weight: 500;
+            color: #1c1c1c;
+            padding: 0.7rem 0.8rem;
+            border-radius: 6px;
+
+            &.active {
+              color: #002d62;
+              font-weight: 600;
+            }
+          }
+
+          &.copyright {
+            font-size: 0.7rem;
+            color: #666;
+            padding: 0.8rem 0.5rem 0;
+            margin-top: 0.5rem;
+            line-height: 1.3;
+          }
+        }
+      }
+    }
+  }
+}

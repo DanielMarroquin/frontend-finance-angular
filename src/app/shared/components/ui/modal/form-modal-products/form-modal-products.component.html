@@ -1,0 +1,113 @@
+<div class="modal-overlay" *ngIf="productForm">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="closeModal()">&times;</button>
+
+    <h4 class="modal-title">Formulario de Registro</h4>
+
+    <form [formGroup]="productForm" class="product-form" (ngSubmit)="submitForm()">
+      <div class="form-row">
+        <div class="alert alert-error" *ngIf="errorMessage">
+          {{ errorMessage }}
+        </div>
+        <div class="form-group" [class.invalid]="id.invalid && (id.touched || id.dirty)">
+          <label>ID</label>
+          <input type="text" formControlName="id">
+
+          <div class="error-message" *ngIf="id.errors?.['required'] && (id.touched || id.dirty)">
+            Este campo es requerido!
+          </div>
+          <div class="error-message" *ngIf="id.errors?.['minlength']">
+            Mínimo 3 caracteres ({{id.errors?.['minlength'].actualLength}}/3)
+          </div>
+          <div class="error-message" *ngIf="id.errors?.['maxlength']">
+            Máximo 10 caracteres
+          </div>
+        </div>
+
+        <div class="form-group" [class.invalid]="name.invalid && (name.touched || name.dirty)">
+          <label>Nombre</label>
+          <input type="text" formControlName="name">
+
+          <div class="error-message" *ngIf="name.errors?.['required'] && (name.touched || name.dirty)">
+            Este campo es requerido!
+          </div>
+          <div class="error-message" *ngIf="name.errors?.['minlength']">
+            Mínimo 5 caracteres ({{name.errors?.['minlength'].actualLength}}/5)
+          </div>
+          <div class="error-message" *ngIf="name.errors?.['maxlength']">
+            Máximo 100 caracteres
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group description-group" [class.invalid]="description.invalid && (description.touched || description.dirty)">
+          <label>Descripción</label>
+          <textarea formControlName="description" rows="1"></textarea>
+
+          <div class="error-message" *ngIf="description.errors?.['required'] && (description.touched || description.dirty)">
+            Este campo es requerido!
+          </div>
+          <div class="error-message" *ngIf="description.errors?.['minlength']">
+            Mínimo 10 caracteres ({{description.errors?.['minlength'].actualLength}}/10)
+          </div>
+          <div class="error-message" *ngIf="description.errors?.['maxlength']">
+            Máximo 200 caracteres
+          </div>
+        </div>
+
+        <div class="form-group logo-group" [class.invalid]="logo.invalid && (logo.touched || logo.dirty)">
+          <label>Logo (URL)</label>
+          <input type="url" formControlName="logo" placeholder="https://ejemplo.com/logo.png">
+
+          <div class="error-message" *ngIf="logo.errors?.['required'] && (logo.touched || logo.dirty)">
+            Este campo es requerido!
+          </div>
+          <div class="error-message" *ngIf="logo.errors?.['pattern']">
+            Debe ser una URL válida (ej: https://...)
+          </div>
+
+          <div *ngIf="logo.value" class="logo-preview-container">
+            <img [src]="logo.value" alt="Logo preview" class="logo-preview"
+                 onerror="this.style.display='none'">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" [class.invalid]="releaseDate.invalid && (releaseDate.touched || releaseDate.dirty)">
+          <label>Fecha Liberación</label>
+          <input type="date" formControlName="releaseDate" [min]="minReleaseDate">
+
+          <div class="error-message" *ngIf="releaseDate.errors?.['required'] && (releaseDate.touched || releaseDate.dirty)">
+            Este campo es requerido!
+          </div>
+        </div>
+
+        <div class="form-group" [class.invalid]="reviewDate.invalid && (reviewDate.touched || reviewDate.dirty)">
+          <label>Fecha Revisión</label>
+          <input type="date" formControlName="reviewDate" [disabled]="!releaseDate.value">
+
+          <div class="error-message" *ngIf="reviewDate.errors?.['required'] && (reviewDate.touched || reviewDate.dirty)">
+            Este campo es requerido!
+          </div>
+          <div class="error-message" *ngIf="reviewDate.errors?.['invalidReviewDate']">
+            Debe ser exactamente 1 año después de la fecha de liberación
+          </div>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="reset-btn" (click)="resetForm()" [disabled]="isLoading">
+          Reiniciar
+        </button>
+        <button type="submit" class="submit-btn"
+                [disabled]="(productForm.invalid) || isLoading">
+          <span *ngIf="!isLoading">Enviar</span>
+          <span *ngIf="isLoading">Guardando...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

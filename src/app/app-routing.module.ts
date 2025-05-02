@@ -1,7 +1,24 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { MainLayoutComponent } from "./layouts/main-layout/main-layout.component";
 
-const routes: Routes = [];
+
+export const routes: Routes = [
+  {
+    path: '',
+    component: MainLayoutComponent,
+    children: [
+      {
+        path: 'products', loadChildren: () => import('./features/products/products.module').then(m => m.ProductsModule),
+      },
+      {
+        path: '',
+        redirectTo: 'products',
+        pathMatch: 'full',
+      },
+    ],
+  },
+]
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
