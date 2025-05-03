@@ -19,7 +19,7 @@ import { NgxDatatableModule } from "@swimlane/ngx-datatable";
     HeaderComponent,
     SidebarComponent,
     FooterComponent,
-    FormModalProductsComponent
+    FormModalProductsComponent,
   ],
   imports: [
     BrowserModule,

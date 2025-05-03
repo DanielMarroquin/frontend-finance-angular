@@ -15,6 +15,9 @@ import { format } from 'date-fns';
 })
 export class ProductsComponent implements OnInit {
 
+  searchTerm: string = '';
+  allProducts: Product[] = []; // Todos los productos
+
   displayedProducts: Product[] = [];
   pageSize = 5;
   currentPage = 0;
@@ -44,6 +47,7 @@ export class ProductsComponent implements OnInit {
     this.productService.getAll().subscribe({
       next: (products) => {
         this.products = products;
+        this.allProducts = products;
         this.updateDisplayedProducts();
         console.log('Productos cargados:', this.products);
       },
@@ -103,12 +107,9 @@ export class ProductsComponent implements OnInit {
   editProduct(row: any) {
   }
 
-
-
-
   isModalOpen = false;
 
-  openAddProductModal() {
+  addNewProduct() {
     const modalRef = this.modalService.open(FormModalProductsComponent);
     // @ts-ignore
     modalRef.afterClosed().subscribe((result) => {
@@ -117,6 +118,21 @@ export class ProductsComponent implements OnInit {
       }
     });
   }
+
+  onSearch(term: string): void {
+    if (!term.trim()) {
+      this.products = [...this.allProducts];
+    } else {
+      this.products = this.allProducts.filter(product =>
+        product.name.toLowerCase().includes(term) ||
+        product.description.toLowerCase().includes(term)
+      );
+    }
+
+    this.currentPage = 0;
+    this.updateDisplayedProducts();
+  }
+
 
   closeModal() {
     this.isModalOpen = false;

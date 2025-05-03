@@ -1,14 +1,10 @@
 <div class="products-container">
   <div class="products-header">
     <div class="search-container">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2">
-        <circle cx="11" cy="11" r="8"></circle>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-      </svg>
-      <input type="text" placeholder="Buscar productos..." class="search-input">
+      <app-search-product (search)="onSearch($event)"></app-search-product>
     </div>
     <h3>Productos Financieros</h3>
-    <button class="add-button" (click)="openAddProductModal()">
+    <button class="add-button" (click)="addNewProduct()">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <line x1="12" y1="5" x2="12" y2="19"></line>
         <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -21,7 +17,7 @@
     <ngx-datatable
       class="material"
       style="width: 100%"
-      [rows]="products"
+      [rows]="displayedProducts"
       [columns]="columns"
       [columnMode]="'force'"
       [rowHeight]="60"
