@@ -13,23 +13,26 @@ import { HttpClientModule } from "@angular/common/http";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    MainLayoutComponent,
-    HeaderComponent,
-    SidebarComponent,
-    FooterComponent,
-    FormModalProductsComponent,
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    NgxDatatableModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        MainLayoutComponent,
+        HeaderComponent,
+        SidebarComponent,
+        FooterComponent,
+        FormModalProductsComponent,
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        HttpClientModule,
+        NgxDatatableModule
+    ],
+    providers: [],
+    exports: [
+        FormModalProductsComponent
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

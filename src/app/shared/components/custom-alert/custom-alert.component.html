@@ -1,0 +1,12 @@
+<div class="alert-backdrop">
+  <div class="alert-box" [ngClass]="type">
+    <h2>{{ title }}</h2>
+    <p>{{ message }}</p>
+    <div class="buttons">
+      <button *ngIf="type === 'confirm'" (click)="onConfirm(true)">Confirmar</button>
+      <button *ngIf="type === 'confirm'" (click)="onConfirm(false)">Cancelar</button>
+      <button *ngIf="type !== 'confirm'" (click)="onConfirm(true)">OK</button>
+    </div>
+  </div>
+</div>
+

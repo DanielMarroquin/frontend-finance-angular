@@ -14,14 +14,14 @@ import { SharedModule } from "../../shared/shared.module";
   declarations: [
     ProductsComponent,
   ],
-  imports: [
-    SharedModule,
-    CommonModule,
-    ProductsRoutingModule,
-    HttpClientModule,
-    ReactiveFormsModule,
-    NgxDatatableModule,
-    FormsModule,
-  ]
+    imports: [
+        SharedModule,
+        CommonModule,
+        ProductsRoutingModule,
+        HttpClientModule,
+        ReactiveFormsModule,
+        NgxDatatableModule,
+        FormsModule,
+    ]
 })
 export class ProductsModule { }

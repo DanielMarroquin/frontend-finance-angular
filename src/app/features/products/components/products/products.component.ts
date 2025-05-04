@@ -15,15 +15,19 @@ import { format } from 'date-fns';
 })
 export class ProductsComponent implements OnInit {
 
-  searchTerm: string = '';
-  allProducts: Product[] = []; // Todos los productos
-
+  allProducts: Product[] = [];
   displayedProducts: Product[] = [];
   pageSize = 5;
   currentPage = 0;
+  showForm = false;
+  showAlert = false;
+  alertTitle = '';
+  alertMessage = '';
+  alertType: 'success' | 'error' | 'confirm' = 'success';
+  private alertCallback: ((confirmed: boolean) => void) | null = null;products: Product[] = [];
 
 
-  products: Product[] = [];
+
   columns = [
     {name: 'Logo', prop: 'logo'},
     {name: 'Nombre del Producto', prop: 'name'},
@@ -42,14 +46,34 @@ export class ProductsComponent implements OnInit {
     this.loadProducts();
   }
 
+  showCustomAlert(title: string, message: string, type: 'success' | 'error' | 'confirm', callback?: (confirmed: boolean) => void) {
+    this.alertTitle = title;
+    this.alertMessage = message;
+    this.alertType = type;
+    this.showAlert = true;
+    this.alertCallback = callback || null;
+  }
+
+  handleAlertConfirm(confirmed: boolean) {
+    this.showAlert = false;
+    if (this.alertCallback) {
+      this.alertCallback(confirmed);
+      this.alertCallback = null;
+    }
+  }
+
 
   loadProducts(): void {
     this.productService.getAll().subscribe({
       next: (products) => {
-        this.products = products;
-        this.allProducts = products;
+        // Mantén el orden original de los productos
+        this.products = [...products];  // Usa spread operator para nueva referencia
+        this.allProducts = [...products];
+
+        // Reinicia la paginación
+        this.currentPage = 0;
+
         this.updateDisplayedProducts();
-        console.log('Productos cargados:', this.products);
       },
       error: (error) => {
         console.error('Error al cargar productos:', error);
@@ -57,20 +81,16 @@ export class ProductsComponent implements OnInit {
     });
   }
 
-
-
-  createProduct(data: any) {
-    this.productService.createProduct(data).subscribe({
-      next: (product) => {
-        this.products.push(product);
-        this.updateDisplayedProducts();
-        console.log('Producto creado:', product);
-      },
-      error: (error) => {
-        console.error('Error al crear producto:', error);
-      }
-    });
+  updateDisplayedProducts(): void {
+    // Crea un nuevo array para forzar la detección de cambios
+    this.displayedProducts = [...this.products.slice(
+      this.currentPage * this.pageSize,
+      (this.currentPage + 1) * this.pageSize
+    )];
   }
+
+
+
 
   findOneProduct(id: string) {
     this.productService.getOne(id).subscribe({
@@ -84,37 +104,54 @@ export class ProductsComponent implements OnInit {
   }
 
 
-  updateDisplayedProducts(): void {
-    const start = this.currentPage * this.pageSize;
-    const end = start + this.pageSize;
-    this.displayedProducts = this.products.slice(start, end);
-  }
-
-
-  deleteProduct(id: any) {
-    this.productService.delete(id).subscribe({
-      next: () => {
-        this.products = this.products.filter(product => product.id !== id);
-        this.updateDisplayedProducts();
-        console.log('Producto eliminado');
-      },
-      error: (error) => {
-        console.error('Error al eliminar producto:', error);
+  deleteProduct(product: Product) {
+    this.showCustomAlert(
+      '¿Confirmar eliminación?',
+      `¿Estás seguro de eliminar el producto "${product.name}"?`,
+      'confirm',
+      (confirmed) => {
+        if (confirmed) {
+          this.productService.delete(product.id).subscribe({
+            next: () => {
+              this.products = this.products.filter(p => p.id !== product.id);
+              this.updateDisplayedProducts();
+              this.showCustomAlert('Eliminado', `Producto "${product.name}" eliminado correctamente`, 'success');
+            },
+            error: () => {
+              this.showCustomAlert('Error', 'No se pudo eliminar el producto', 'error');
+            }
+          });
+        }
       }
-    });
+    );
   }
 
-  editProduct(row: any) {
-  }
 
-  isModalOpen = false;
+
+
+
 
   addNewProduct() {
     const modalRef = this.modalService.open(FormModalProductsComponent);
-    // @ts-ignore
-    modalRef.afterClosed().subscribe((result) => {
+    modalRef.instance.mode = 'add';
+    modalRef.instance.closed.subscribe((result: string) => {
       if (result === 'success') {
         this.loadProducts();
+      }
+    });
+    this.showForm = true;
+  }
+
+  editProduct(row: any) {
+    const modalRef = this.modalService.open(FormModalProductsComponent);
+    modalRef.instance.mode = 'edit';
+    modalRef.instance.loadProductData(row);
+
+    modalRef.instance.closed.subscribe((result: string) => {
+      if (result === 'success') {
+        setTimeout(() => {
+          this.loadProducts();
+        }, 300);
       }
     });
   }
@@ -134,8 +171,11 @@ export class ProductsComponent implements OnInit {
   }
 
 
-  closeModal() {
-    this.isModalOpen = false;
+  onModalClosed(result: 'success' | 'cancel') {
+    this.showForm = false;
+    if (result === 'success') {
+      this.loadProducts();
+    }
   }
 
   formatDate(dateString: string): string {

@@ -10,12 +10,13 @@ import { of } from 'rxjs';
   styleUrls: ['./form-modal-products.component.scss']
 })
 export class FormModalProductsComponent {
-  @Output() closed = new EventEmitter<void>();
+  @Output() closed = new EventEmitter<'success' | 'cancel'>();
   // @ts-ignore
   productForm: FormGroup;
   minReleaseDate: string;
   isLoading = false;
   errorMessage: string | null = null;
+  mode: 'add' | 'edit' = 'add';
 
   constructor(
     private fb: FormBuilder,
@@ -30,7 +31,7 @@ export class FormModalProductsComponent {
       id: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
       name: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(100)]],
       description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(200)]],
-      logo: ['', [Validators.required, Validators.pattern('https?://.+')]], // Validación de URL
+      logo: ['', [Validators.required, Validators.pattern('https?://.+')]],
       releaseDate: ['', Validators.required],
       reviewDate: ['', Validators.required]
     });
@@ -58,38 +59,50 @@ export class FormModalProductsComponent {
     }
   }
 
+  public loadProductData(product: any): void {
+    this.mode = 'edit';
+    this.productForm.patchValue({
+      id: product.id,
+      name: product.name,
+      description: product.description,
+      logo: product.logo,
+      releaseDate: product.date_release.split('T')[0],
+      reviewDate: product.date_revision.split('T')[0]
+    });
+    this.productForm.get('id')?.disable();
+  }
+
   submitForm(): void {
     if (this.productForm.valid) {
-      this.isLoading = true;
-      this.errorMessage = null;
+      const formData = this.getFormData();
 
-      const formData = {
-        id: this.productForm.value.id,
-        name: this.productForm.value.name,
-        description: this.productForm.value.description,
-        logo: this.productForm.value.logo,
-        date_release: new Date(this.productForm.value.releaseDate).toISOString(),
-        date_revision: new Date(this.productForm.value.reviewDate).toISOString()
-      };
+      const serviceCall = this.mode === 'edit'
+        ? this.productService.update(formData.id, formData)
+        : this.productService.createProduct(formData);
 
-      this.productService.createProduct(formData)
-        .pipe(
-          catchError(error => {
-            this.errorMessage = error.error?.message || 'Error al guardar el producto';
-            this.isLoading = false;
-            return of(null);
-          })
-        )
-
-        .subscribe(response => {
-          this.isLoading = false;
-          if (response) {
-            this.closeModal();
-          }
-        });
-    } else {
-      this.productForm.markAllAsTouched();
+      serviceCall.pipe(
+        catchError(error => {
+          // Manejo de errores
+          return of(null);
+        })
+      ).subscribe(response => {
+        if (response) {
+          this.closeModal('success');
+        }
+      });
     }
+  }
+
+  private getFormData() {
+    const rawValue = this.productForm.getRawValue();
+    return {
+      id: rawValue.id,
+      name: rawValue.name,
+      description: rawValue.description,
+      logo: rawValue.logo,
+      date_release: new Date(rawValue.releaseDate).toISOString(),
+      date_revision: new Date(rawValue.reviewDate).toISOString()
+    };
   }
 
   get id(): AbstractControl { return this.productForm.get('id') as AbstractControl; }
@@ -105,7 +118,9 @@ export class FormModalProductsComponent {
     });
   }
 
-  closeModal(): void {
-    this.closed.emit();
+
+  closeModal(result: 'success' | 'cancel' = 'cancel'): void {
+    this.closed.emit(result);
   }
+
 }
