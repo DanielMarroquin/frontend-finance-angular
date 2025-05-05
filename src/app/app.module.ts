@@ -11,6 +11,7 @@ import { FormModalProductsComponent } from './shared/components/ui/modal/form-mo
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
 import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { CreditCardComponent } from './features/credit-card/components/credit-card.component';
 
 @NgModule({
     declarations: [
@@ -20,6 +21,7 @@ import { NgxDatatableModule } from "@swimlane/ngx-datatable";
         SidebarComponent,
         FooterComponent,
         FormModalProductsComponent,
+        CreditCardComponent,
     ],
     imports: [
         BrowserModule,
@@ -27,7 +29,7 @@ import { NgxDatatableModule } from "@swimlane/ngx-datatable";
         FormsModule,
         ReactiveFormsModule,
         HttpClientModule,
-        NgxDatatableModule
+        NgxDatatableModule,
     ],
     providers: [],
     exports: [

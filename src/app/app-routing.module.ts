@@ -12,6 +12,21 @@ export const routes: Routes = [
         path: 'products', loadChildren: () => import('./features/products/products.module').then(m => m.ProductsModule),
       },
       {
+        path: 'credit-card', loadChildren: () => import('./features/credit-card/credit-card.module').then(m => m.CreditCardModule),
+      },
+      {
+        path: 'wallet', loadChildren: () => import('./features/wallet/wallet.module').then(m => m.WalletModule),
+      },
+      {
+        path: 'credits', loadChildren: () => import('./features/credits/credits.module').then(m => m.CreditsModule),
+      },
+      {
+        path: 'investments', loadChildren: () => import('./features/investments/investments.module').then(m => m.InvestmentsModule),
+      },
+      {
+        path: 'insurance', loadChildren: () => import('./features/insurance-services/insurance-services.module').then(m => m.InsuranceServicesModule),
+      },
+      {
         path: '',
         redirectTo: 'products',
         pathMatch: 'full',

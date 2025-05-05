@@ -95,22 +95,4 @@ src/app
 
 ---
 
-## ✅ Screenshots del sistema
 
-> Incluye aquí capturas de pantalla si deseas mejorar la presentación final del repositorio.
-
-Ejemplo:
-```
-📸 /screenshots/product-list.png
-📸 /screenshots/product-form.png
-📸 /screenshots/modal-delete.png
-```
-
-Puedes agregar imágenes arrastrándolas a tu repositorio GitHub y enlazarlas aquí con Markdown:
-```md
-![Listado de productos](screenshots/product-list.png)
-```
-
----
-
-¿Deseas que continúe generando el código para los componentes y formularios a partir de esta base?
