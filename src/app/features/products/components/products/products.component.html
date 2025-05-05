@@ -13,6 +13,16 @@
     </button>
   </div>
 
+  <div class="results-info">
+    <span>{{displayedProducts.length}} Resultados</span>
+    <div class="page-size-selector">
+      <label for="pageSize">Mostrar:</label>
+      <select id="pageSize" [(ngModel)]="pageSize" (change)="changePageSize(pageSize)">
+        <option *ngFor="let size of pageSizeOptions" [value]="size">{{size}}</option>
+      </select>
+    </div>
+  </div>
+
 
   <div class="products-table-container">
     <ngx-datatable

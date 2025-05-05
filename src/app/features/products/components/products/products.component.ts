@@ -26,7 +26,7 @@ export class ProductsComponent implements OnInit {
   alertType: 'success' | 'error' | 'confirm' = 'success';
   private alertCallback: ((confirmed: boolean) => void) | null = null;products: Product[] = [];
 
-
+  pageSizeOptions = [5, 10, 20];
 
   columns = [
     {name: 'Logo', prop: 'logo'},
@@ -54,6 +54,12 @@ export class ProductsComponent implements OnInit {
     this.alertCallback = callback || null;
   }
 
+  changePageSize(newSize: number): void {
+    this.pageSize = newSize;
+    this.currentPage = 0;
+    this.updateDisplayedProducts();
+  }
+
   handleAlertConfirm(confirmed: boolean) {
     this.showAlert = false;
     if (this.alertCallback) {
@@ -66,13 +72,9 @@ export class ProductsComponent implements OnInit {
   loadProducts(): void {
     this.productService.getAll().subscribe({
       next: (products) => {
-        // Mantén el orden original de los productos
-        this.products = [...products];  // Usa spread operator para nueva referencia
+        this.products = [...products];
         this.allProducts = [...products];
-
-        // Reinicia la paginación
         this.currentPage = 0;
-
         this.updateDisplayedProducts();
       },
       error: (error) => {
@@ -82,14 +84,11 @@ export class ProductsComponent implements OnInit {
   }
 
   updateDisplayedProducts(): void {
-    // Crea un nuevo array para forzar la detección de cambios
     this.displayedProducts = [...this.products.slice(
       this.currentPage * this.pageSize,
       (this.currentPage + 1) * this.pageSize
     )];
   }
-
-
 
 
   findOneProduct(id: string) {
@@ -125,9 +124,6 @@ export class ProductsComponent implements OnInit {
       }
     );
   }
-
-
-
 
 
 
